@@ -4,6 +4,7 @@
 
 from psychopy import core, parallel, win
 
+################################################################################
 # OPTION #1: Using parallel port for sending triggers
 # The function should also include a small delay to ensure the trigger is registered correctly.
 from psychopy import parallel
@@ -15,17 +16,20 @@ def trigger(code):
     port.setData(code)
     core.wait(0.020)
     port.setData(0)
+    print('trigger sent {}'.format(code))
 
+################################################################################
 # OPTION #2: Using serial port for sending triggers
 import serial
 
 # Define the port
 port = serial.Serial("COM4", 115200)  # address for serial port is COM4 in this example. Change to match your machine.
 
-port.write(str.encode(code))
+def trigger(code):
+    port.write(code.to_bytes(1, 'big'))
+    print('trigger sent {}'.format(code))
 
-
-#####################################################################################
+################################################################################
 # OPTION #3: looking for the port type and setting it up accordingly
 
 # Find relevant port type
@@ -46,13 +50,11 @@ if port_type == 'parallel':                 # Parallel port
         print('trigger sent {}'.format(code))
 elif port_type == 'serial':                 # Serial port
     def trigger(code=1):
-        port.write(str.encode(code))
+        port.write(code.to_bytes(1, 'big'))
         print('trigger sent {}'.format(code))
 else:                                       # No port set
     def trigger(code=1):
         print('trigger not sent {}'.format(code))
-
-
 
 #####################################################################################
 # Example usage of the trigger function:

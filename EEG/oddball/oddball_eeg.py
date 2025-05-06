@@ -54,7 +54,7 @@ if port_type == 'parallel':
         print('trigger sent {}'.format(code))
 elif port_type == 'serial':
     def trigger(code=1):
-        port.write(str.encode(code))
+        port.write(code.to_bytes(1, 'big'))
         print('trigger sent {}'.format(code))
 else:
     def trigger(code=1):
@@ -79,11 +79,11 @@ def run_task(n_trials, ratio):
         if trl == 0:
             deviant_tone.play(when = nextFlip)
             deviant_text.draw()
-            trig = '2'
+            trig = 2
         else:
             standard_tone.play(when = nextFlip)
             standard_text.draw()
-            trig = '1'
+            trig = 1
           
         win.callOnFlip(trigger, trig)        
         win.flip()                                  # Update the window to show the visual stimulus
