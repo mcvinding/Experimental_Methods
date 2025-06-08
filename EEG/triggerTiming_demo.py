@@ -3,12 +3,14 @@
 from psychopy import visual, core, sound, event, parallel
 import random
 import serial
+import pylsl
 
 # Parameters
 n_trials        = 1000  # Total number of trials
+use_lsl         = True
 
 # Create a window
-win = visual.Window(fullscr=True, color='black', screen=1)
+win = visual.Window(fullscr=False, color='black', screen=1)
 
 ################################################################################
 # FUNCITONS
@@ -20,18 +22,43 @@ win = visual.Window(fullscr=True, color='black', screen=1)
 #    parallel.setData(0)
 
 # EEG TRIGGER (read port)
-try:
-    port = serial.Serial("COM4", 115200)  # Make sure COM port matches your system
-    port_type = 'serial'
-except NotImplementedError:
-    port = parallel.setPortAddress(0x378) # 0x378 is the address for parallel port on many machines
-    port_type = 'parallel'
-except:
-    port_type = 'Not set'
+if use_lsl is True:
+    port_type = 'lsl'
+    
+    name = "triggerTiming"
+    strm_type = "Markers"
+    chans = 1
+    srate = 1000.0
+    fmt = 'string'
 
-print('port type: {}'.format(port_type))
+    info = pylsl.StreamInfo(
+        name=name,
+        type=strm_type,
+        channel_count=chans,
+        nominal_srate=srate,
+        channel_format=fmt,
+    #    source_id=None,
+    )
+    outlet = pylsl.StreamOutlet(info)
+    print("Now publishing stream:", info.name(), info.type(), info.channel_count(), "channels at", info.nominal_srate(), "Hz")
+else:
+    try:
+        port = serial.Serial("COM4", 115200)  # Make sure COM port matches your system
+        port_type = 'serial'
+    except NotImplementedError:
+        port = parallel.setPortAddress(0x378) # 0x378 is the address for parallel port on many machines
+        port_type = 'parallel'
+    except:
+        port_type = 'Not set'
 
-if port_type == 'parallel':
+    print('port type: {}'.format(port_type))
+
+# Make trigger functions
+if port_type == 'lsl':
+    def trigger(code=1):
+        outlet.push_sample(str(code))
+        print("Pushing marker {}" .format(code))
+elif port_type == 'parallel':
     def trigger(code=1):
         port.setData(code)
         print('trigger sent {}'.format(code))
