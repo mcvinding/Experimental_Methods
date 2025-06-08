@@ -10,7 +10,7 @@ Parallel ports sends values based on parallel "pins" that each represents a bit 
 
 Serial ports can send different values where the information is send in series of "packages". This means that the timing and how the codes are read at the reciving end can be off if not handled correctly. Serial ports can be used to emulate parallel ports if given only length 1 and proper encoding.
 
-This example takes the integer `code` and transformes it to a code that can be send over serial to emulate a parallel trigger (not that it only works for numbers 0-255):
+This example takes the integer `code` and transformes it to a code that can be send over serial to emulate a parallel trigger (note this only works for numbers 0-255):
 
 ````python
 code.to_bytes(1, 'big')
@@ -47,7 +47,7 @@ ls /dev/tty.*
 ```
 Then find the name that match the connected device.
 
-This adress usually works: 
+This adress usually works for the EEG system we have in the Psychology lab: 
 
 ````python
 port = serial.Serial('/dev/tty.usbserial-DN2Q03LO', 115200)
