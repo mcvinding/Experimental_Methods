@@ -7,7 +7,7 @@ import pylsl
 
 # Parameters
 n_trials        = 1000  # Total number of trials
-use_lsl         = True
+use_lsl         = False
 
 # Create a window
 win = visual.Window(fullscr=False, color='black', screen=1)
@@ -43,7 +43,7 @@ if use_lsl is True:
     print("Now publishing stream:", info.name(), info.type(), info.channel_count(), "channels at", info.nominal_srate(), "Hz")
 else:
     try:
-        port = serial.Serial("COM4", 115200)  # Make sure COM port matches your system
+        port = serial.Serial("COM9", 115200)  # Make sure COM port matches your system
         port_type = 'serial'
     except NotImplementedError:
         port = parallel.setPortAddress(0x378) # 0x378 is the address for parallel port on many machines

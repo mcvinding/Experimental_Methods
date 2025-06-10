@@ -35,7 +35,7 @@ def make_triallist(length, ratio):
 name = "oddball_task"
 strm_type = "Markers"
 chans = 1
-srate = 1000.0
+srate = 0
 fmt = 'string'
 
 info = pylsl.StreamInfo(
